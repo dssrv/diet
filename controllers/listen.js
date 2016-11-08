@@ -10,7 +10,7 @@
     
     const url = require('url')
     const parent = module.parent.exports
-
+    const utils = require('./utils')
 // ===========================================================================
 //  Exports
 // ===========================================================================
@@ -20,10 +20,11 @@
     	return function(location, options, callback){
     	    var callback = typeof options == 'function' ? options : callback ;
     	    var options = !options || typeof options == 'function' ? {} : options ;
+    	    var protocolName = (typeof options == 'object' && options.cert || options.key || options.ca) ? 'https' : 'http' ;
     	    
     	    // define location
             if(!isNaN(location)) {
-            	app.location = url.parse('http://localhost:'+location);
+            	app.location = url.parse(protocolName+'://0.0.0.0:'+location);
             
             } else if(typeof location == 'string') {
                     var location = location.indexOf('://') == -1 ? 'http://' + location : location ;
@@ -32,15 +33,15 @@
             } else if(typeof location == 'object') {
             	app.location = location;
             	
-            } else if(!isset(location)){
-            	app.location = url.parse('http://localhost:80/');
+            } else if(!utils.isset(location)){
+            	app.location = url.parse(protocolName+'://0.0.0.0:80/');
             }            
             
             // define protocol
     		//var protocol = app.location.protocol === 'http:' ? require('http') : require('https') ;
     		
     		// define port
-    		app.port = app.location.protocol === 'http:' ? (app.location.port || 80) : (app.location.port || 443) ;
+    		app.port = app.location.protocol === 'http:' && (!options.cert && !options.key) ? (app.location.port || 80) : (app.location.port || 443) ;
     		
     		// create route containers
     		app.routes = typeof app.routes != "undefined" ? app.routes : { get: [], post: [], options: [], put: [], patch: [], head: [], delete: [], trace: [], header: [], footer: [], missing: [], error: [] }
@@ -68,8 +69,9 @@
     			
     			// listen on localhost addresses
     			// Implement check if app.hosts['127.0.0.1:' + port] do nothing else
-    			app.listen('http://127.0.0.1:'+app.port, options);
-    			app.listen('http://'+app.address+':'+app.port, options);
+    			//app.listen('http://localhost:'+app.port, options);
+    			//app.listen('http://127.0.0.1:'+app.port, options);
+    			//app.listen('http://'+app.address+':'+app.port, options);
     			
     		// otherwise reuse the server object
     		} else {
@@ -84,4 +86,4 @@
     		return app;
     	}
     }
-    
+   

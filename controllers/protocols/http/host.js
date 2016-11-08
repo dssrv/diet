@@ -11,13 +11,16 @@
     const Error         = require('../../error')
     const url           = require('url')
     const RouteIterator = require('../../iterator')
+    const utils         = require('../../utils')
     
 // ===========================================================================
 //  Exports
 // ===========================================================================
 
     module.exports = function(App, protocol, location){
+
     	return function(request, response){
+    		
     	    App.emit('route.start', { app: App, request: request, response: response })
     	    
     	    // set default header
@@ -27,11 +30,11 @@
     		var method   = request.method ? request.method.toLowerCase() : '' ;      
     		var host     = request.headers.host ? request.headers.host : '' ; 
     		var location = request.url ? url.parse(request.url) : '' ;      
-    		var port     = host.split(':')[1];
-    		var hostname = isset(port) ? host : host + ':' + protocol.globalAgent.defaultPort ;
-    		
+    		var port     = host.split(':')[1] || protocol.globalAgent.defaultPort;
+    		var hostname = utils.isset(port) ? host : host + ':' + protocol.globalAgent.defaultPort ;
+			
     		// get app (host controller) handling this hostname
-    		var app = App.hosts[hostname] 
+    		var app = App.hosts[hostname] || App.hosts[hostname+':'+port] || App.hosts['0.0.0.0:'+port]
     		
     		// if the app (host controller) exists and it has routes for this method
     		if(app && app.routes && app.routes[method]){ 
@@ -111,4 +114,3 @@
     		
     	}
     }
-
