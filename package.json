@@ -60,7 +60,7 @@
     "nextjs": "0.0.3",
     "object.observe": "^0.2.6",
     "path-to-regexp": "^1.0.1",
-    "sugar": "^2.0.2"
+    "sugar": "^2.0.3"
   },
   "devDependencies": {
     "coveralls": ">=2.11.2",
