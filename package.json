@@ -47,7 +47,7 @@
     "url": "http://adamhalasz.com/"
   },
   "dependencies": {
-    "async": "^2.1.2",
+    "async": "^2.3.0",
     "callsite": "^1.0.0",
     "clone": "^2.0.0",
     "colors": "^1.0.3",
